@@ -17,79 +17,128 @@
 What's New in |release|
 =======================
 
-Apache CloudStack |release| is a |version| LTS release with over 15 major new
-features, and over 250 enhancements and fixes since 4.14. Highlights include:
+Apache CloudStack |release| is a 4.19 LTS minor release with over 300 fixes
+and improvements since the 4.19.0.0 release. Some of the highlights include:
 
-• New modern UI (GA release)
-• Support for CentOS8 and Ubuntu 20.04 for management server and KVM hosts (note: CentOS 8 will EOL in Dec 2021)
-• Support for XCP-ng 8.1
-• Support for MySQL 8
-• NoVNC console integration
-• Unmanaging guest VMs
-• VMware advanced storage capabilities (vSAN, vVols, VMFS6, datastore clusters)
-• VMware full OVF properties support
-• Secondary Storage usage improvements
-• PVLAN support for L2 networks
-• Role-based users in Projects
-• Dynamic roles improvements
-• Boot into BIOS on VMware
-• Redfish OOBM Support
-• Human readable sizes in logs
+• Improvements for VMware migration to KVM
+• Support to manage/unmanage DATA volume of a primary storage on KVM
+• Support for NFS mount options for a primary storage on KVM
+• Support to change storage pool scope from Cluster to Zone and vice versa
+• Support for RHEL/OL/Rocky/Alma Linux in the same cluster
+• Import from remote KVM enhancements
+• Storage plugins, PowerFlex, StorPool, Linstor related fixes and improvements
+• Some CKS, Veeam (B&R) related fixes and improvements
+• Several UI fixes and improvements
+
+The full list of fixes and improvements can be found in the project release notes at
+https://docs.cloudstack.apache.org/en/4.19.1.0/releasenotes/changes.html
+
+What's in since 4.19.0.0
+========================
+
+Apache CloudStack 4.19.0.0 is the initial 4.19 LTS release with 300+ new
+features, improvements and bug fixes since 4.18, including 26 major
+new features. Some of the highlights include:
+
+• CloudStack Object Storage Feature
+• VMware to KVM Migration
+• KVM Import
+• CloudStack DRS
+• OAuth2 Authentication
+• VNF Appliances Support
+• CloudStack DRS
+• CloudStack Snapshot Copy
+• Scheduled Instance Lifecycle Operations
+• Guest OS Management
+• Pure Flash Array and HPE-Primera Support
+• User-specified source NAT
+• Storage Browser
+• Safe CloudStack Shutdown
+• New CloudStack Dashboard
+• Domain migration
+• Flexible tags for hosts and storage pools
+• Support for Userdata in Autoscale Groups
+• KVM Host HA for StorPool storage
+• Dynamic secondary storage selection
+• Domain VPCs
+• Global ACL for VPCs
 
 The full list of new features can be found in the project release notes at
-http://docs.cloudstack.apache.org/en/4.15.0.0/releasenotes/changes.html
+https://docs.cloudstack.apache.org/en/4.19.0.0/releasenotes/changes.html
 
-.. important::
-   This version of CloudStack allows control over the visibility of the DNS services provided
-   by the Virtual Router in Shared networks. By default CloudStack allows DNS queries via the
-   Guest interface from any IP address. This allows for the DNS resolution of guest VMs on the
-   Shared network by services outside of the shared network. While this can be useful, it can
-   also be an issue on Shared Networks which are using Internet routable/public (i.e. non-RFC1918)
-   IP addresses, as the DNS service is then queriable from the public internet at large. A new
-   global setting "expose.dns.externally" has been added (with a default value of "true" in
-   order to keep backward compatibility) which controls whether the source of DNS queries
-   should be limited to only hosts on the Shared Network guest subnet or not. If you wish
-   to disable 'outside' access to the DNS services running on Virtual Routers; set the value
-   to "false" and recreate the related Virtual Routers.
+.. _guestosids
 
-Apache CloudStack powers numerous elastic Cloud computing services, including solutions that have
-ranked as Gartner Magic Quadrant leaders. Highlighted in the Forrester Q4 2017 Enterprise Open Source
-Cloud Adoption report, Apache CloudStack "sits beneath hundreds of service provider clouds", including
-Fortune 5 multinational corporations. A list of known Apache CloudStack users are available
-at http://cloudstack.apache.org/users.html
+Possible Issue with volume snapshot revert with KVM
+===================================================
 
-Libvirt Python Dependency on KVM and CentOS
-===========================================
+Between versions 4.17.x, 4.18.0 and 4.18.1, KVM volume snapshot backups were
+not full snapshots and they rely on the primary storage as a backing store.
+To prevent any loss of data, care must be taken during revert operation and
+it must be ensured that the source primary storage snapshot file is present
+if the snapshot is created with any of these CloudStack versions.
 
-For CentOS users using the security groups feature on KVM it is needed to install the epel-release and python36-libvirt packages.
+Users will have a backing store in their volume snapshots in the following cases:
 
-Workaround for adding newer KVM hosts
-=====================================
+- the snapshots are from a ROOT volume created from template;
 
-Newer GNU/Linux distributions with latest OpenSSH package disables some older
-SSH algorithms and ciphers and newer algorithms are not supported by trilead-ssh
-library used by CloudStack to SSH into KVM hosts during the host-add operation.
-Until the dependency library can support that users can use the following
-workaround in their KVM host's /etc/ssh/sshd_config and restart ssh server
-before adding the KVM host in CloudStack:
+Users will not have a backing store in their volume snapshots in the following cases:
 
-   PubkeyAcceptedKeyTypes=+ssh-dss
+- the snapshots are from ROOT volumes created with ISO;
+- the snapshots are from DATADISK volumes;
 
-   HostKeyAlgorithms=+ssh-dss
+Following there are two queries to help users identify snapshots with a backing store:
 
-   KexAlgorithms=+diffie-hellman-group1-sha1
+Identify snapshots that were not removed yet and were created from a volume that was created from a template:
 
-New UI GA and Legacy UI Deprecation and Removal Notice
-=======================================================
+.. parsed-literal::
+   SELECT  s.uuid AS "Snapshot ID",
+           s.name AS "Snapshot Name",
+           s.created AS "Snapshot creation datetime",
+           img_s.uuid AS "Sec Storage ID",
+           img_s.name AS "Sec Storage Name",
+           ssr.install_path AS "Snapshot path on Sec Storage",
+           v.uuid AS "Volume ID",
+           v.name AS "Volume Name"
+   FROM    cloud.snapshots s
+   INNER   JOIN cloud.volumes v ON (v.id = s.volume_id)
+   INNER   JOIN cloud.snapshot_store_ref ssr ON (ssr.snapshot_id = s.id
+                                             AND ssr.store_role = 'Image')
+   INNER   JOIN cloud.image_store img_s  ON (img_s.id = ssr.store_id)
+   WHERE   s.removed IS NULL
+   AND   v.template_id IS NOT NULL;
 
-Cloudstack 4.15 ships with the GA release of a new and modern User Interface as
-the default UI which deprecates the current legacy UI. With version 4.15, the
-existing legacy UI (deprecated) along with the new UI are the supported UI for
-production environments.
+With that, one can use qemu-img info in the snapshot file to check if they have a backing store.
 
-The default URL <host>:8080/client will serve the new UI and
-<host>:8080/client/legacy will serve the deprecated legacy UI.
+For those snapshots that have a backing store, one can use the following query to check which template is it and in which storage pool it is:
 
-In the next release (4.16), the Apache Cloudstack community will remove the legacy
-UI. Users are encouraged to implement a migration path towards deprecating the
-legacy UI in their production environments.
+.. parsed-literal::
+   SELECT  vt.uuid AS "Template ID",
+         vt.name AS "Template Name",
+         tsr.install_path AS "Template file on Pri Storage",
+         sp.uuid AS "Pri Storage ID",
+         sp.name AS "Pri Storage Name",
+         sp.`path` AS "Pri Storage Path",
+         sp.pool_type as "Pri Storage type"
+   FROM    cloud.template_spool_ref tsr
+   INNER   JOIN cloud.storage_pool sp ON (sp.id = tsr.pool_id AND sp.removed IS NULL)
+   INNER   JOIN cloud.vm_template vt ON (vt.id = tsr.template_id)
+   WHERE   tsr.install_path = "<template file in the snapshot backing store>";
+
+After identifying the snapshots with a backing store and the related templates, one can mount the secondary storage on a host that has access to the template and use qemu-img convert on the snapshot to consolidate it:
+
+.. parsed-literal::
+   qemu-img convert -O qcow2 -U --image-opts driver=qcow2,file.filename=<path to snapshot on secondary storage> <path to snapshot on secondary storage>-converted
+
+Issue regarding LDAP authentication on version 4.19.0
+=====================================================
+
+In version 4.19.0, the encryption of scoped configurations of Accounts and Domains was changed to only encrypt if there were sensitive data (e.g, they belonged to the Hidden or Secure category) as all configurations for Accounts and Domains were encrypted in previous versions. However, when using the encrypted values from these scopes, ACS did not correctly decrypt these values. For this reason, a simple solution was to update these configurations to their plain values with manual DB intervention, as reported in issue `#8637`.
+
+This issue has been fixed in Apache CloudStack 4.19.1.0. However, for users that manually set the configurations ``ldap.bind.password`` and ``ldap.truststore.password`` to a plain value in order to fix the faulty behaviour, it is required to store them encrypted after upgrading to version 4.19.1 and onwards. It will not be possible to update the configuration via UI, as an exception will be thrown when ACS tries to decrypt the plain value. To fix this, it is required to set the password again for ACS to encrypt it. There are two options:
+
+#. Manually set the configuration via CloudMonkey, for example ``update configuration domainid=<domain-uuid> name="ldap.bind.password" value="password"``;
+#. Or, removing the defined configuration through the database via the query ``DELETE from cloud.domain_details WHERE name like "%ldap%password%"``, and setting the configuration via UI for the affected domains.
+
+After updating these configurations, LDAP authentication should be working as expected.
+
+.. _`#8637`: https://github.com/apache/cloudstack/pull/8637

@@ -13,7 +13,7 @@
    specific language governing permissions and limitations
    under the License.
 
-.. CloudStack Administration Documentation master file, created by
+.. CloudStack Administration Documentation main file, created by
    sphinx-quickstart on Sat Jan 25 15:55:12 2014.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -69,11 +69,11 @@ Setting up Networking for Users
    :maxdepth: 4
 
    networking
-   autoscale_without_netscaler
+   autoscale_with_virtual_router
 
 
-Working with Virtual Machines
------------------------------
+Working with Instances
+----------------------
 
 .. toctree::
    :maxdepth: 4
@@ -89,6 +89,13 @@ Working with Templates & ISOs
 
    templates
 
+Working with Clusters
+------------------
+
+.. toctree::
+   :maxdepth: 4
+
+   clusters
 
 Working with Hosts
 ------------------
@@ -108,8 +115,8 @@ Working with Storage
    storage
 
 
-Working with System Virtual Machines
-------------------------------------
+Working with System VMs
+-----------------------
 
 .. toctree::
    :maxdepth: 4
@@ -125,6 +132,13 @@ Working with Usage
 
    usage
 
+Managing VM and Volume Allocation
+---------------------------------
+
+.. toctree::
+   :maxdepth: 4
+
+   host_and_storage_tags
 
 Managing Networks and Traffic
 -----------------------------
@@ -134,6 +148,7 @@ Managing Networks and Traffic
 
    networking_and_traffic
    networking/using_remote_access
+   networking/vnf_templates_appliances
 
 
 Managing the Cloud

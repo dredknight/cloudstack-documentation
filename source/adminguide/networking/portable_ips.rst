@@ -12,7 +12,7 @@
    KIND, either express or implied.  See the License for the
    specific language governing permissions and limitations
    under the License.
-   
+
 
 Portable IPs
 ------------
@@ -43,6 +43,12 @@ The salient features of Portable IP are as follows:
 
 -  Portable IP transfer is available only for static NAT.
 
+.. note::
+   Portable IPs is currently not supported in the new UI.
+   To manage Portable IPs, please directly invoke the
+   respective APIs or use `cloudmonkey <https://github.com/apache/cloudstack-cloudmonkey>`_,
+   the CLI tool for cloudstack
+
 
 Guidelines
 ^^^^^^^^^^
@@ -70,9 +76,9 @@ Configuring Portable IPs
 #. Specify the following:
 
    -  **Start IP/ End IP**: A range of IP addresses that are accessible
-      from the Internet and will be allocated to guest VMs. Enter the
+      from the Internet and will be allocated to Guest Instances. Enter the
       first and last IP addresses that define a range that CloudStack
-      can assign to guest VMs.
+      can assign to Guest Instances.
 
    -  **Gateway**: The gateway in use for the Portable IP addresses you
       are configuring.
@@ -93,7 +99,7 @@ Acquiring a Portable IP
 
 #. Click the name of the network where you want to work with.
 
-#. Click View IP Addresses.
+#. Click Public IP Addresses.
 
 #. Click Acquire New IP.
 
@@ -123,7 +129,7 @@ API:
    http://localhost:8096/client/api?command=enableStaticNat&response=json&ipaddressid=a4bc37b2-4b4e-461d-9a62-b66414618e36&virtualmachineid=a242c476-ef37-441e-9c7b-b303e2a9cb4f&networkid=6e7cd8d1-d1ba-4c35-bdaf-333354cbd49810
 
 Replace the UUID with appropriate UUID. For example, if you want to
-transfer a portable IP to network X and VM Y in a network, execute the
+transfer a portable IP to network X and instance Y in a network, execute the
 following:
 
 .. code:: bash

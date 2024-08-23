@@ -1,3 +1,18 @@
+.. Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information#
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+
 .. _setting-s2s-vpn-conn:
 
 Setting Up a Site-to-Site VPN Connection
@@ -5,12 +20,12 @@ Setting Up a Site-to-Site VPN Connection
 
 A Site-to-Site VPN connection helps you establish a secure connection
 from an enterprise datacenter to the cloud infrastructure. This allows
-users to access the guest VMs by establishing a VPN connection to the
+users to access the Guest Instances by establishing a VPN connection to the
 virtual router of the account from a device in the datacenter of the
 enterprise. You can also establish a secure connection between two VPC
 setups or high availability zones in your environment. Having this
 facility eliminates the need to establish VPN connections to individual
-VMs.
+instances.
 
 The difference from Remote VPN is that Site-to-site VPNs connects entire
 networks to each other, for example, connecting a branch office network
@@ -196,12 +211,12 @@ Creating a VPN gateway for the VPC
    page.
 
 #. Click the Configure button of the VPC to which you want to deploy the
-   VMs.
+   instances.
 
-   The VPC page is displayed where all the tiers you created are listed
+   The VPC page is displayed where all the Network Tiers you created are listed
    in a diagram.
 
-   For each tier, the following options are displayed:
+   For each Network Tier, the following options are displayed:
 
    -  Internal LB
 
@@ -209,7 +224,7 @@ Creating a VPN gateway for the VPC
 
    -  Static NAT
 
-   -  Virtual Machines
+   -  Instances
 
    -  CIDR
 
@@ -257,14 +272,14 @@ Creating a VPN Connection
    All the VPCs that you create for the account are listed in the page.
 
 #. Click the Configure button of the VPC to which you want to deploy the
-   VMs.
+   instances.
 
-   The VPC page is displayed where all the tiers you created are listed
+   The VPC page is displayed where all the Network Tiers you created are listed
    in a diagram.
 
 #. Click the Settings icon.
 
-   For each tier, the following options are displayed:
+   For each Network Tier, the following options are displayed:
 
    -  Internal LB
 
@@ -272,7 +287,7 @@ Creating a VPN Connection
 
    -  Static NAT
 
-   -  Virtual Machines
+   -  Instances
 
    -  CIDR
 
@@ -389,14 +404,14 @@ Restarting and Removing a VPN Connection
    page.
 
 #. Click the Configure button of the VPC to which you want to deploy the
-   VMs.
+   instances.
 
-   The VPC page is displayed where all the tiers you created are listed
+   The VPC page is displayed where all the Network Tiers you created are listed
    in a diagram.
 
 #. Click the Settings icon.
 
-   For each tier, the following options are displayed:
+   For each Network Tier, the following options are displayed:
 
    -  Internal LB
 
@@ -404,7 +419,7 @@ Restarting and Removing a VPN Connection
 
    -  Static NAT
 
-   -  Virtual Machines
+   -  Instances
 
    -  CIDR
 

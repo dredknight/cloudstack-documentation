@@ -384,14 +384,17 @@ line:
 
 .. parsed-literal::
 
-   deb http://server.url/cloudstack/repo/binary ./
+   deb http://<server.url>/cloudstack/repo/binary ./
 
 If you signed your Release file with GnuPG, import the signing key
 on your target system first.
 
 .. parsed-literal::
 
-   $ wget -q -O - http://server.url/cloudstack/repo/binary/KEY.gpg | sudo apt-key add -
+   $ wget -q -O - http://<server.url>/cloudstack/repo/binary/KEY.gpg | sudo apt-key add -
+
+.. note::
+   In the previous lines the variable <server.url> must be replaced with the address of the repository
 
 Now that you have the repository info in place, you'll want to run
 another update so that APT knows where to find the CloudStack packages.
@@ -502,7 +505,7 @@ Creating a yum repo
 ^^^^^^^^^^^^^^^^^^^
 
 While RPMs is a useful packaging format - it's most easily consumed from
-Yum repositories over a network. The next step is to create a Yum Repo
+Yum repositories over a Network. The next step is to create a Yum Repo
 with the finished packages:
 
 .. parsed-literal::
@@ -534,7 +537,7 @@ named ``/etc/yum.repos.d/cloudstack.repo`` with this information:
    gpgcheck=0
 
 Completing this step will allow you to easily install CloudStack on a
-number of machines across the network.
+number of machines across the Network.
 
 .. _building-noredist:
 
@@ -565,7 +568,7 @@ to build from source.
    page on the wiki.
 
 #. You may also need to download
-   `vhd-util <http://download.cloud.com.s3.amazonaws.com/tools/vhd-util>`_,
+   `vhd-util <https://download.cloudstack.org/tools/>`_,
    which was removed due to licensing issues. You'll copy vhd-util to
    the ``scripts/vm/hypervisor/xenserver/`` directory.
 

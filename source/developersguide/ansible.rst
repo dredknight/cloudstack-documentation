@@ -17,11 +17,6 @@
 Deploying CloudStack with Ansible
 =================================
 
-In this article, `Paul Angus <https://twitter.com/CloudyAngus>`__ Cloud
-Architect at ShapeBlue takes a look at using Ansible to Deploy an
-Apache CloudStack cloud. 
-
-
 What is Ansible
 ---------------
 
@@ -68,7 +63,7 @@ So let’s see something
 
 For this example we’re going to create an Ansible server which will then
 deploy a CloudStack server. Both of these servers will be CentOS 6.4
-virtual machines.
+Instances.
 
 
 Installing Ansible
@@ -239,7 +234,7 @@ the file will look like this:
 This needs to be saved as `/etc/ansible/roles/mysql/tasks/main.yml`
 
 As explained earlier, this playbook in fact describes the state of the
-host rather than setting out commands to be run. For instance, we
+host rather than setting out commands to be run. For Instance, we
 specify certain lines which must be in the my.cnf file and allow Ansible
 to decide whether or not it needs to add them.
 
@@ -272,7 +267,7 @@ For the management server role we create a main.yml task like this:
      yum: name=libselinux-python state=present
 
 
-   - name: Ensure the Apache Cloudstack Repo file exists as per template
+   - name: Ensure the Apache Cloudstack Repo file exists as per Template
 
      template: src=cloudstack.repo.j2 dest=/etc/yum.repos.d/cloudstack.repo
 
@@ -299,9 +294,9 @@ For the management server role we create a main.yml task like this:
 
 Save this as `/etc/ansible/roles/cloudstack-management/tasks/main.yml`
 
-Now we have some new elements to deal with. The Ansible template module
+Now we have some new elements to deal with. The Ansible Template module
 uses Jinja2 based templating.  As we’re doing a simplified example here,
-the Jinja template for the cloudstack.repo won’t have any variables in
+the Jinja Template for the cloudstack.repo won’t have any variables in
 it, so it would simply look like this:
 
 ::
@@ -340,7 +335,7 @@ There are some more variables here for us to declare later.
 System VM Templates:
 --------------------
 
-Finally we would want to seed the system VM templates into the secondary
+Finally we would want to seed the system VM Templates into the secondary
 storage.  The playbook for this would look as follows:
 
 ::
@@ -355,19 +350,19 @@ storage.  The playbook for this would look as follows:
 
    - name: Seed secondary storage
      command:
-   /usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m {{ tmp\_nfs\_path }} -u http://download.cloud.com/templates/4.2/systemvmtemplate-2013-06-12-master-kvm.qcow2.bz2 -h kvm -F
+   /usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m {{ tmp\_nfs\_path }} -u http://download.cloudstack.org/templates/4.2/systemvmtemplate-2013-06-12-master-kvm.qcow2.bz2 -h kvm -F
 
      command:
-   /usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m {{ tmp\_nfs\_path }} -u http://download.cloud.com/templates/4.2/systemvmtemplate-2013-07-12-master-xen.vhd.bz2 -h xenserver -F
+   /usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m {{ tmp\_nfs\_path }} -u http://download.cloudstack.org/templates/4.2/systemvmtemplate-2013-07-12-master-xen.vhd.bz2 -h xenserver -F
 
      command:
-   /usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m {{ tmp\_nfs\_path }} -u http://download.cloud.com/templates/4.2/systemvmtemplate-4.2-vh7.ov -h vmware -F
+   /usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m {{ tmp\_nfs\_path }} -u http://download.cloudstack.org/templates/4.2/systemvmtemplate-4.2-vh7.ov -h vmware -F
 
 
 Save this as `/etc/ansible/roles/cloudstack-manager/tasks/seedstorage.yml`
 
 Again, there isn’t a CloudStack module so Ansible will always run this
-even if the secondary storage already has the templates in it.
+even if the secondary storage already has the Templates in it.
 
  
 Bringing it all together
@@ -422,7 +417,7 @@ How is this example different from a production deployment?
 -----------------------------------------------------------
 
 In a production deployment, the Ansible playbooks would configure
-multiple management servers connected to master/slave replicating MySQL
+multiple management servers connected to the source/replica replicating MySQL
 databases along with any other infrastructure components required and
 deploy and configure the hypervisor hosts. We would also have a
 dedicated file describing the hosts in the environment and a dedicated
